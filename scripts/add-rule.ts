@@ -51,22 +51,17 @@ import { pluginId } from './lib/plugin-id';
     `import { TSESLint } from "@typescript-eslint/experimental-utils";
 
 const rule: TSESLint.RuleModule<"", []> = {
+  defaultOptions: [],
   meta: {
     docs: {
-      // TODO: write the rule summary.
       description: "",
-
-      // TODO: choose the rule category.
-      category: "Possible Errors",
-      category: "Best Practices",
-      category: "Stylistic Issues",
-
       recommended: false,
       url: "",
     },
-
-    fixable: null,
-    messages: {},
+    fixable: undefined,
+    messages: {
+      "": "",
+    },
     schema: [],
 
     // TODO: choose the rule type.
