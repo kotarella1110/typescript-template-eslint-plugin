@@ -27,4 +27,4 @@ const rule: TSESLint.RuleModule<'disallowExample', []> = {
   },
 };
 
-export = rule;
+export default rule;
