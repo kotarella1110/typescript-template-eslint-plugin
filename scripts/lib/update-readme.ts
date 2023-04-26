@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import { readFileSync, writeFileSync } from 'fs';
+import { resolve } from 'path';
+import type { CategoryInfo, RuleInfo } from './rules';
 import { categories } from './rules';
-import type { RuleInfo, CategoryInfo } from './rules';
 
 /**
  * Render a given rule as a table row.
@@ -29,15 +29,13 @@ ${category.rules.map(renderRule).join('\n')}
 `;
 }
 
-const filePath = path.resolve(__dirname, '../../README.md');
+const filePath = resolve(__dirname, '../../README.md');
 const content = categories.map(renderCategory).filter(Boolean).join('\n');
 
-fs.writeFileSync(
+writeFileSync(
   filePath,
-  fs
-    .readFileSync(filePath, 'utf8')
-    .replace(
-      /<!--RULE_TABLE_BEGIN-->[\s\S]*<!--RULE_TABLE_END-->/u,
-      `<!--RULE_TABLE_BEGIN-->\n${content}\n<!--RULE_TABLE_END-->`
-    )
+  readFileSync(filePath, 'utf8').replace(
+    /<!--RULE_TABLE_BEGIN-->[\s\S]*<!--RULE_TABLE_END-->/u,
+    `<!--RULE_TABLE_BEGIN-->\n${content}\n<!--RULE_TABLE_END-->`
+  )
 );

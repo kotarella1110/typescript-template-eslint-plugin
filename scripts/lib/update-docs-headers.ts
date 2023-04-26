@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
+import { readFileSync, writeFileSync } from 'fs';
+import { dirname, join, relative, resolve } from 'path';
 import { pluginId } from './plugin-id';
-import { rules } from './rules';
 import type { RuleInfo } from './rules';
+import { rules } from './rules';
 
 type ListFormatOptions = {
   type?: 'conjunction' | 'disjunction' | 'unit';
@@ -19,9 +19,9 @@ declare namespace Intl {
 
 const headerPattern = /^#.+\n(?:>.+\n)*\n+/u;
 const footerPattern = /\n+## Implementation[\s\S]*$/u;
-const ruleRoot = path.resolve(__dirname, '../../src/rules');
-const testRoot = path.resolve(__dirname, '../../tests/rules');
-const docsRoot = path.resolve(__dirname, '../../docs/rules');
+const ruleRoot = resolve(__dirname, '../../src/rules');
+const testRoot = resolve(__dirname, '../../tests/rules');
+const docsRoot = resolve(__dirname, '../../docs/rules');
 const listFormatter = new Intl.ListFormat('en', { type: 'conjunction' });
 
 /**
@@ -60,22 +60,24 @@ function renderHeader(rule: RuleInfo): string {
  * Render the document header of a given rule.
  */
 function renderFooter(rule: RuleInfo): string {
-  const docsPath = path.dirname(path.resolve(docsRoot, `${rule.name}.md`));
-  const rulePath = path
-    .relative(docsPath, path.join(ruleRoot, `${rule.name}.ts`))
-    .replace(/\\/gu, '/');
-  const testPath = path
-    .relative(docsPath, path.join(testRoot, `${rule.name}.ts`))
-    .replace(/\\/gu, '/');
+  const docsPath = dirname(resolve(docsRoot, `${rule.name}.md`));
+  const rulePath = relative(
+    docsPath,
+    join(ruleRoot, `${rule.name}.ts`)
+  ).replace(/\\/gu, '/');
+  const testPath = relative(
+    docsPath,
+    join(testRoot, `${rule.name}.ts`)
+  ).replace(/\\/gu, '/');
 
   return `\n\n## Implementation\n\n- [Rule source](${rulePath})\n- [Test source](${testPath})`;
 }
 
 for (const rule of rules) {
-  const filePath = path.resolve(docsRoot, `${rule.name}.md`);
-  const original = fs.readFileSync(filePath, 'utf8');
+  const filePath = resolve(docsRoot, `${rule.name}.md`);
+  const original = readFileSync(filePath, 'utf8');
   const body = original.replace(headerPattern, '').replace(footerPattern, '');
   const content = `${renderHeader(rule)}${body}${renderFooter(rule)}\n`;
 
-  fs.writeFileSync(filePath, content);
+  writeFileSync(filePath, content);
 }
