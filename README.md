@@ -77,12 +77,6 @@ See also [Configuring ESLint](https://eslint.org/docs/user-guide/configuring).
 
 <!--RULE_TABLE_BEGIN-->
 
-### Stylistic Issues
-
-| Rule ID                                           | Description      |     |
-| :------------------------------------------------ | :--------------- | :-: |
-| [xxxx/example-rule](./docs/rules/example-rule.md) | An example rule. | ⭐️ |
-
 <!--RULE_TABLE_END-->
 
 ## Semantic Versioning Policy

@@ -1,6 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import { existsSync, writeFileSync } from 'fs';
+import { relative, resolve } from 'path';
 import { pluginId } from './lib/plugin-id';
+
 (() => {
   const ruleId = process.argv[2];
 
@@ -11,16 +12,16 @@ import { pluginId } from './lib/plugin-id';
     return;
   }
 
-  const docPath = path.resolve(__dirname, '../docs/rules', `${ruleId}.md`);
-  const rulePath = path.resolve(__dirname, '../src/rules', `${ruleId}.ts`);
-  const testPath = path.resolve(__dirname, '../tests/rules', `${ruleId}.ts`);
+  const docPath = resolve(__dirname, '../docs/rules', `${ruleId}.md`);
+  const rulePath = resolve(__dirname, '../src/rules', `${ruleId}.ts`);
+  const testPath = resolve(__dirname, '../tests/rules', `${ruleId}.ts`);
 
   // Overwrite check.
   for (const filePath of [docPath, rulePath, testPath]) {
-    if (fs.existsSync(filePath)) {
+    if (existsSync(filePath)) {
       console.error(
         '%o has existed already.',
-        path.relative(process.cwd(), filePath)
+        relative(process.cwd(), filePath)
       );
       process.exitCode = 1;
       return;
@@ -28,7 +29,7 @@ import { pluginId } from './lib/plugin-id';
   }
 
   // Generate files.
-  fs.writeFileSync(
+  writeFileSync(
     docPath,
     `# ${pluginId}/${ruleId}
 > (TODO: summary)
@@ -45,27 +46,22 @@ import { pluginId } from './lib/plugin-id';
 `
   );
 
-  fs.writeFileSync(
+  writeFileSync(
     rulePath,
-    `import { TSESLint } from "@typescript-eslint/experimental-utils";
+    `import { TSESLint } from "@typescript-eslint/utils";
 
 const rule: TSESLint.RuleModule<"", []> = {
+  defaultOptions: [],
   meta: {
     docs: {
-      // TODO: write the rule summary.
       description: "",
-
-      // TODO: choose the rule category.
-      category: "Possible Errors",
-      category: "Best Practices",
-      category: "Stylistic Issues",
-
       recommended: false,
       url: "",
     },
-
-    fixable: null,
-    messages: {},
+    fixable: undefined,
+    messages: {
+      "": "",
+    },
     schema: [],
 
     // TODO: choose the rule type.
@@ -83,10 +79,10 @@ export = rule;
 `
   );
 
-  fs.writeFileSync(
+  writeFileSync(
     testPath,
     `
-import { TSESLint } from "@typescript-eslint/experimental-utils";
+import { TSESLint } from "@typescript-eslint/utils";
 import rule from "../../src/rules/${ruleId}";
 
 new TSESLint.RuleTester().run("${ruleId}", rule, {
