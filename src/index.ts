@@ -2,9 +2,9 @@
 
 export = {
   configs: {
-    recommended: import('./configs/recommended'),
+    recommended: require('./configs/recommended'),
   },
   rules: {
-    'example-rule': import('./rules/example-rule'),
+    'example-rule': require('./rules/example-rule'),
   },
 };
